@@ -185,7 +185,7 @@ class State:
     def toogle_mode(self):
         if self.get_mode() == MODE_CD:
             self.set_mode(MODE_HDD)
-        else if self.get_mode() == MODE_HDD:
+        elif self.get_mode() == MODE_HDD:
             self.set_mode(MODE_CD)
         else:
             self.set_mode(MODE_USB)
