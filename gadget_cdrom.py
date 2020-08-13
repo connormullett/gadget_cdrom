@@ -15,6 +15,9 @@ APP_DIR = os.path.dirname(os.path.realpath(__file__))
 
 MODE_CD = "cd"
 MODE_HDD = "hdd"
+MODE_USB = "usb"
+
+display_output = None
 
 
 class SH1106:
@@ -116,7 +119,7 @@ class State:
         self._mode = None
         self._iso_name = None
         self._iso_ls_cache = None
-        self.set_mode(MODE_CD)
+        self.set_mode(MODE_USB)
         
     def inserted_iso(self):
         return self._iso_name
@@ -147,7 +150,7 @@ class State:
         return True
         
     def iso_ls(self):
-        assert(self._mode == MODE_CD)
+        assert(self._mode == MODE_USB)
 
         if self._iso_ls_cache:
             return self._iso_ls_cache
@@ -165,10 +168,10 @@ class State:
         return self._mode
         
     def set_mode(self, mode):
-        assert(mode in (MODE_CD, MODE_HDD))
+        assert(mode in (MODE_USB, MODE_HDD))
         
         self._iso_name = None
-        if mode == MODE_CD:
+        if mode == MODE_USB:
             script = os.path.join(APP_DIR, "cd_mode.sh")
         elif mode == MODE_HDD:
             script = os.path.join(APP_DIR, "hdd_mode.sh")
@@ -177,14 +180,14 @@ class State:
         self._iso_ls_cache = None
 
     def toogle_mode(self):
-        if self.get_mode() == MODE_CD:
+        if self.get_mode() == MODE_USB:
             self.set_mode(MODE_HDD)
         else:
-            self.set_mode(MODE_CD)
+            self.set_mode(MODE_USB)
         return self.get_mode()
 
     def remove_iso(self):
-         assert(self._mode == MODE_CD)
+         assert(self._mode == MODE_USB)
 
          self._iso_name = None
          script = os.path.join(APP_DIR, "remove_iso.sh")
@@ -200,13 +203,14 @@ class Display:
         self._font_hdd = ImageFont.truetype(FONT, 52)
             
     def refresh(self, state):
-        assert(state.get_mode() in (MODE_HDD, MODE_CD))
+        assert(state.get_mode() in (MODE_HDD, MODE_USB))
         
         image = Image.new('1', (self._disp.WIDTH_RES, self._disp.HEIGHT_RES), "WHITE")
         draw = ImageDraw.Draw(image)
         
         if state.get_mode() == MODE_HDD:
-            draw.text((0,0), "HDD", font=self._font_hdd)
+            global display_output
+            draw.text((0,0), display_output, font=self._font_hdd)
             self._disp.display_image(image)
             return
         
@@ -333,13 +337,11 @@ class Main:
         self._state.insert_iso()
 
     def _button_umount(self):
-        if self._state.get_mode() != MODE_CD:
+        if self._state.get_mode() != MODE_USB:
             return
         self._state.remove_iso()
 
 
 if __name__ == "__main__":
     Main().main()
-
-
-
+    print(display_output)
