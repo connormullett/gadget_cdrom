@@ -185,7 +185,7 @@ class State:
     def toogle_mode(self):
         if self.get_mode() == MODE_CD:
             self.set_mode(MODE_HDD)
-        elif self.get_mode() == MODE_HDD:
+        else if self.get_mode() == MODE_HDD:
             self.set_mode(MODE_CD)
         else:
             self.set_mode(MODE_USB)
@@ -213,8 +213,6 @@ class Display:
         image = Image.new('1', (self._disp.WIDTH_RES, self._disp.HEIGHT_RES), "WHITE")
         draw = ImageDraw.Draw(image)
 
-        mode_text = state.get_mode()
-        
         if state.get_mode() == MODE_HDD:
             draw.text((0,0), mode_text, font=self._font_hdd)
             self._disp.display_image(image)
@@ -223,11 +221,11 @@ class Display:
         iso_name = state.inserted_iso()
         if iso_name == None:
             iso_name = ""
-            
+
         iso_choice = ["", "", ""]
         iso_select = state.get_iso_select()
         iso_ls = state.iso_ls()
-        
+
         if len(iso_ls) == 0:
             iso_choice[1] = "    No ISO"
         else:
@@ -242,7 +240,10 @@ class Display:
             except IndexError:
                 pass
         
-        draw.text((0,0), mode_text + " " + iso_name, font = self._font)
+        if state.get_mode() == MODE_CD:
+            draw.text((0,0), "CD  " + iso_name, font = self._font)
+        else:
+            draw.text((0,0), "USB " + iso_name, font = self._font)
         draw.text((0,15), iso_choice[0], font = self._font)
         draw.text((0,30), iso_choice[1], font = self._font)
         draw.text((0,45), iso_choice[2], font = self._font)
