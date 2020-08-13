@@ -174,10 +174,7 @@ class State:
         elif mode == MODE_HDD:
             script = os.path.join(APP_DIR, "hdd_mode.sh")
         else:
-            if os.path.exists(os.path.join(APP_DIR, "usb_mode.sh")):
-                script = os.path.join(APP_DIR, "usb_mode.sh")
-            else:
-                script = os.path.join(APP_DIR, "cd_mode.sh")
+            script = os.path.join(APP_DIR, "usb_mode.sh")
         subprocess.check_call([script])
         self._mode = mode
         self._iso_ls_cache = None
