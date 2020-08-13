@@ -181,9 +181,9 @@ class State:
 
     def toogle_mode(self):
         if self.get_mode() == MODE_USB:
-            self.set_mode(MODE_HDD)
-        else:
             self.set_mode(MODE_USB)
+        else:
+            self.set_mode(MODE_HDD)
         return self.get_mode()
 
     def remove_iso(self):
